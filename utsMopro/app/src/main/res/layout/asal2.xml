@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:text="Ukuran 1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textColor="@android:color/white"
+        android:textSize="54sp"
+        android:background="#009688" />
+    <TextView
+        android:text="Ukuran 2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textColor="@android:color/white"
+        android:textSize="54sp"
+        android:background="#009688" />
+    <TextView
+        android:text="Ukuran 3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textColor="@android:color/white"
+        android:textSize="34sp"
+        android:background="#009688" />
+</LinearLayout>
