@@ -1,5 +1,8 @@
 package hannasalmaa.utsmopro;
 
+/**
+ * Created by Andriana on 10/30/2016.
+ */
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,73 +11,92 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-/**
- * Created by acer on 10/26/2016.
- */
-
 public class LoginActivity extends AppCompatActivity {
+
     // Email, password edittext
     EditText txtUsername, txtPassword;
-    // isi Shared Preferences 1
-    private final String NAMA = "Aminah Fauziah";
-    private final String EMAIL = "ami95hope@gmail.com";
-    // Username dan password
-    private final String USERNAME = "admin";
-    private final String PASSWORD = "admin";
+
     // login button
     Button btnLogin;
+
+
+    // Alert Dialog Manager
+    AlertDialogManager alert = new AlertDialogManager();
+
     // Session Manager Class
     SessionManager session;
+
+
+
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.login_activity);
+
         // Session Manager
         session = new SessionManager(getApplicationContext());
+
         // Email, Password input text
         txtUsername = (EditText) findViewById(R.id.txtUsername);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
-        // Menampilkan Status Login dengan Toast
-        Toast.makeText(getApplicationContext(), "User Login Status: " +
-                session.isLoggedIn(), Toast.LENGTH_LONG).show();
+
+        Toast.makeText(getApplicationContext(), "User Login Status: " + session.isLoggedIn(), Toast.LENGTH_LONG).show();
+
+
         // Login button
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        // Login button onClick event
+
+
+        // Login button click event
         btnLogin.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View arg0) {
                 // Get username, password from EditText
                 String username = txtUsername.getText().toString();
                 String password = txtPassword.getText().toString();
-                // cek jika username dan password terisi
-                if(username.trim().length() > 0 && password.trim().length() >
-                        0){
-                    // jika username dan password sesuai dengan data
-                    if(username.equals(USERNAME) && password.equals(PASSWORD)){
-                        // membuat user login session
-                        // menyimpan data nama dan email
-                        session.createLoginSession(NAMA, EMAIL);
-                        // Mengarahkan ke MainActivity
-                        Intent i = new Intent(getApplicationContext(),
-                                MainActivity.class);
+
+                // Check if username, password is filled
+                if(username.trim().length() > 0 && password.trim().length() > 0){
+                    // For testing puspose username, password is checked with sample data
+                    // username = test
+                    // password = test
+                    if(username.equals("admin") && password.equals("admin")){
+
+                        // Creating user login session
+                        // For testing i am stroing name, email as follow
+                        // Use user real data
+                        session.createLoginSession("Hannati", "1137050226");
+
+                        // Staring MainActivity
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(i);
                         finish();
+
                     }else{
-                        // username / password tidak sesuai
-                        Toast.makeText(getApplicationContext(), "Login Gagal..\n"
-                                + "Username/Password anda salah", Toast.LENGTH_LONG).show();
+                        // username / password doesn't match
+                        alert.showAlertDialog(LoginActivity.this, "Login failed..", "Username/Password is incorrect", false);
                     }
                 }else{
-                    // user tidak memasukan username atau password
-                    Toast.makeText(getApplicationContext(), "Login Gagal..\n" +
-                            "Silahkan masukan username dan password", Toast.LENGTH_LONG).show();
+                    // user didn't entered username or password
+                    // Show alert asking him to enter the details
+                    alert.showAlertDialog(LoginActivity.this, "Login failed..", "Please enter username and password", false);
                 }
+
             }
         });
-    }
-    @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        finish();
+
+        Button btnLupa = (Button) findViewById(R.id.lupa);
+
+        btnLupa.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                Toast.makeText(LoginActivity.this, "Username : admin ||||| Password : admin",
+                        Toast.LENGTH_LONG).show();
+
+            }
+        });
+
     }
 }

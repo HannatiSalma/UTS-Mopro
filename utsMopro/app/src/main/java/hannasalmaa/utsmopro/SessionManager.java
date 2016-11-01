@@ -1,133 +1,128 @@
 package hannasalmaa.utsmopro;
 
 /**
- * Created by MUL 23 on 11/10/2016.
+ * Created by Andriana on 10/30/2016.
  */
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 
 import java.util.HashMap;
+
 
 public class SessionManager {
     // Shared Preferences
     SharedPreferences pref;
-    // Editor untuk Shared preferences
-    Editor editor;
+
+    // Editor for Shared preferences
+    SharedPreferences.Editor editor;
+
     // Context
     Context _context;
+
     // Shared pref mode
     int PRIVATE_MODE = 0;
+
     // Sharedpref file name
-    private static final String PREF_NAME = "BelajarPref";
-    // Semua Shared Preferences Keys
+    private static final String PREF_NAME = "DataSatu";
+
+    // All Shared Preferences Keys
     private static final String IS_LOGIN = "IsLoggedIn";
-    // Nama User (buat dengan variable public agar dapat di akses dari luar)
+
+    // User name (make variable public to access from outside)
     public static final String KEY_NAME = "name";
-    // Alamat Email address (buat dengan variable public agar dapat di akses dari luar)
+
+    // Email address (make variable public to access from outside)
     public static final String KEY_EMAIL = "email";
+
     // Constructor
-    public static final String KEY_NAMA_ANDA = "Nama";
-    public static final String KEY_NIM = "NIM";
     public SessionManager(Context context){
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
     }
+
     /**
-     * Membuat login session
+     * Create login session
      * */
-    public void createLoginSession(String nama, String email){
-    // menyimpan login dengan nilai TRUE
+    public void createLoginSession(String name, String email){
+        // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
-    // menyimpan nama di pref
-        editor.putString(KEY_NAME, nama);
-    // menyimpan email di pref
+
+        // Storing name in pref
+        editor.putString(KEY_NAME, name);
+
+        // Storing email in pref
         editor.putString(KEY_EMAIL, email);
-    // Simpan Perubahan
+
+        // commit changes
         editor.commit();
     }
 
     /**
-     * Membuat View Tampilan
+     * Check login method wil check user login status
+     * If false it will redirect user to login page
+     * Else won't do anything
      * */
-    public void viewTampilan(String Nama , String Nim){
-        // menyimpan login dengan nilai TRUE
-        editor.putBoolean(IS_LOGIN, true);
-        // menyimpan nama di pref
-        editor.putString(KEY_NAMA_ANDA, Nama);
-        // menyimpan email di pref
-        editor.putString(KEY_NIM, Nim);
-        // Simpan Perubahan
-        editor.commit();
+    public void checkLogin(){
+        // Check login status
+        if(!this.isLoggedIn()){
+            // user is not logged in redirect him to Login Activity
+            Intent i = new Intent(_context, LoginActivity.class);
+            // Closing all the Activities
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            // Add new Flag to start new Activity
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Staring Login Activity
+            _context.startActivity(i);
+        }
+
     }
 
+
+
     /**
-     * Mendapatkan session data yang tersimpan
+     * Get stored session data
      * */
     public HashMap<String, String> getUserDetails(){
         HashMap<String, String> user = new HashMap<String, String>();
-    // nama user
+        // user name
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
-    // user email id
+
+        // user email id
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
-    // return user
+
+        // return user
         return user;
     }
 
     /**
-     * Mendapatkan session data yang tersimpan
-     * */
-    public HashMap<String, String> getTampilan(){
-        HashMap<String, String> viewtampil = new HashMap<String, String>();
-        // nama user
-        viewtampil.put(KEY_NAMA_ANDA, pref.getString(KEY_NAMA_ANDA, null));
-        // user email id
-        viewtampil.put(KEY_NIM, pref.getString(KEY_NIM, null));
-        // return user
-        return viewtampil;
-    }
-    /**
-     * metode Check login akan mengecek login status
-     * jika false maka akan mengarahkan ke page Login
-     * jika tidak maka tidak ada perubahan
-     * */
-    public void checkLogin(){
-    // Cek login status
-        if(!this.isLoggedIn()){
-    // jika user tidak login maka akan d arahakan ke Login Activity
-            Intent i = new Intent(_context, LoginActivity.class);
-    // tutup semua Activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    // tambahkan Flag baru untuk memulai Activity baru
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    // membuka Activity Login
-            _context.startActivity(i);
-        }
-    }
-    /**
-     * cek user login
-     * **/
-    // mendapatkan Login State
-    public boolean isLoggedIn(){
-        return pref.getBoolean(IS_LOGIN, false);
-    }
-    /**
-     * Menghapus detail session
+     * Clear session details
      * */
     public void logoutUser(){
-    // menghapus semua data dari Shared Preferences
+        // Clearing all data from Shared Preferences
         editor.clear();
         editor.commit();
-    // setelah logout user diarahkan ke LoginActivity
+
+        // After logout redirect user to Loing Activity
         Intent i = new Intent(_context, LoginActivity.class);
-    // tutup semua Activities
+        // Closing all the Activities
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    // tambahkan Flag baru untuk memulai Activity baru
+
+        // Add new Flag to start new Activity
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        // membuka Activity Login
+
+        // Staring Login Activity
         _context.startActivity(i);
+    }
+
+    /**
+     * Quick check for login
+     * **/
+    // Get Login State
+    public boolean isLoggedIn(){
+        return pref.getBoolean(IS_LOGIN, false);
     }
 }

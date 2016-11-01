@@ -5,27 +5,25 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.SimpleAdapter;
 
-public class MainActivity extends AppCompatActivity {
-    int[] gambar={
-            R.drawable.bforest,
-            R.drawable.tiramisu,
-            R.drawable.velvet,
-            R.drawable.brownies,
-    };
+import java.util.ArrayList;
+import java.util.HashMap;
 
-    ListView list;
-
-    String[] judul ={
-            "Black Forest",
-            "Tiramisu",
-            "Red Velvet",
-            "Brownies",
-
-    };
-
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    SessionManager session;
+    protected ListView lv;
+    protected ListAdapter adapter;
+    SimpleAdapter Adapter;
+    HashMap<String, String> map;
+    ArrayList<HashMap<String, String>> mylist;
+    ArrayList<String> mylistnama;
+    ArrayList<String> mylistgambar;
+    String[] Pil;
+    String[] Ltn;
+    String[] Gbr;
 
 
     @Override
@@ -33,33 +31,59 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inisialisasi CustomAdapter dengan Array yang telah dibuat
-        CustomAdapter adapter = new CustomAdapter(this, gambar, judul);
+        session = new SessionManager(getApplicationContext());
+        session.checkLogin();
 
-        // Inisialisasi ListView
-        list = (ListView) findViewById(R.id.ListGambar);
+        lv = (ListView) findViewById(R.id.lv);
 
-        // set Adapter ke dalam ListView
-        list.setAdapter(adapter);
+        Pil = new String[] {"Black Forest", "Brownies", "Tiramisu", "Velvet"};
+        Gbr = new String[] {
+                Integer.toString(R.drawable.bforest),
+                Integer.toString(R.drawable.brownies),
+                Integer.toString(R.drawable.tiramisu),
+                Integer.toString(R.drawable.velvet),};
+        lv.setOnItemClickListener(this);
+        mylist = new ArrayList<HashMap<String,String>>();
+        mylistnama = new ArrayList();
+        mylistgambar = new ArrayList();
 
-        // action ketika ListView di klik
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        for (int i = 0; i < Pil.length; i++){
+            map = new HashMap<String, String>();
+            map.put("list", Pil[i]);
+            map.put("gbr", Gbr[i]);
+            mylist.add(map);
+        }
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // TODO Auto-generated method stub
+        for (int i = 0; i < Pil.length; i++){
 
-                // String untuk mengambil judul pada Listview
-                String Slecteditem = judul[position];
+            mylistnama.add(Pil[i]);
+        }
 
-                // menampilkan judul dengan Toast
-                //Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(getApplicationContext(),
-                        PesanKue.class);
-                startActivity(i);
-                finish();
-            }
-        });
+        for (int i = 0; i < Pil.length; i++){
+
+            mylistgambar.add(Gbr[i]);
+        }
+
+        Adapter = new SimpleAdapter(this, mylist, R.layout.layout_isi_lv,
+                new String[] {"list","gbr"}, new int[] {R.id.tv_nama, R.id.imV});
+        lv.setAdapter(Adapter);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getApplicationContext(),PesanActivity.class);
+        Bundle b = new Bundle();
+        String txt = (String)mylistnama.get(position);
+        String txt2 = (String)mylistgambar.get(position);
+
+        //Menyisipkan tipe data String ke dalam obyek bundle
+        b.putString("namakue", txt);
+        b.putString("gambarkue",txt2);
+        //Menambahkan bundle intent
+        intent.putExtras(b);
+
+        //memulai Activity kedua
+        startActivity(intent);
+
     }
 }
